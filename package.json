@@ -1,0 +1,19 @@
+{
+  "name": "zeus-api",
+  "version": "1.0.0",
+  "description": "Rest API for zeus",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "./node_modules/.bin/nodemon app.ts"
+  },
+  "author": "Jonathan Yeh",
+  "license": "MIT",
+  "dependencies": {
+    "@types/node": "^20.5.4",
+    "dotenv": "^16.3.1",
+    "nodemon": "^3.0.1",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.1.6"
+  }
+}
