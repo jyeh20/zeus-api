@@ -10,6 +10,9 @@ const server: Server = createServer((socket: Socket) => {
   socket.on("end", () => {
     console.log("Client Disconnected");
   });
+  socket.on("data", (data) => {
+    console.log(`Data received from client: ${data}`);
+  });
   socket.on("close", () => {
     console.log("Client Disconnected");
   });
