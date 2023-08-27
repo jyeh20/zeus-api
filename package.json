@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc --build tsconfig.json",
     "start": "npm run build && pm2 start ./dist/index.js --watch",
-    "dev": "nodemon ./index.ts"
+    "dev": "npm run build && nodemon ./index.ts"
   },
   "author": "Jonathan Yeh",
   "license": "MIT",

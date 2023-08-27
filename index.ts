@@ -14,7 +14,17 @@ const server: Server = createServer((socket: Socket) => {
     console.log("Client Disconnected");
   });
 
-  socket.write("Knock Knock! This is Zeus! Who am I speaking to?\r\n");
+  socket.write(
+    `Knock Knock! This is Zeus on port ${socket.localPort}! Who am I speaking to?\r\n`
+  );
+
+  setTimeout(() => {
+    socket.write("WAHOOO IM LATE");
+  }, 7000);
+});
+
+server.on("drop", () => {
+  console.log("Client disconnected");
 });
 
 server.on("error", (err) => {
