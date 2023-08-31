@@ -5,8 +5,8 @@ class InnateDomain {
   index: number;
 
   constructor(ip: string) {
-    this.ip = ip;
-    this.index = InnateDomainIPMap[ip];
+    this.ip = this.checkIfValidIP(ip);
+    this.index = this.getIPFromDomainMap(ip);
   }
 
   // Getters
@@ -17,6 +17,24 @@ class InnateDomain {
 
   get getIndex() {
     return this.index;
+  }
+
+  checkIfValidIP(ipaddress: string): string {
+    if (
+      /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(
+        ipaddress
+      )
+    ) {
+      return ipaddress;
+    }
+    throw new RangeError(`${ipaddress} is an invalid IP Address!`);
+  }
+
+  getIPFromDomainMap(ipaddress: string): number {
+    if (ipaddress in InnateDomainIPMap) {
+      return InnateDomainIPMap[ipaddress];
+    }
+    throw new Error(`${ipaddress} was not found in InnateDomainIPMap`);
   }
 
   fetchProperty(property: string): any {
