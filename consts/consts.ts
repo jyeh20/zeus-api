@@ -6,12 +6,16 @@ type Const = {
   [key: string]: number | string;
 };
 
-const ip_map: IP = {
-  "192.168.4.18": 1,
+export const InnateDomainIPMap: IP = {
+  "192.168.4.18": 0,
 };
 
-const consts: Const = {
+export const consts: Const = {
   packageSize: 1024,
 };
 
-export { ip_map };
+export type ConnectionObject = {
+  ZeusConnector: string;
+  type: string;
+  clientIP: string;
+};

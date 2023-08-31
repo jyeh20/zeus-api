@@ -1,30 +1,16 @@
 import { createServer, Server, Socket } from "net";
 import dotenv from "dotenv";
+import InnateDomain from "./InnateDomain/InnateDomain";
+import { ConnectionObject } from "./consts/consts";
+import App from "./app";
 
 dotenv.config({ path: ".env" });
 
 const PORT: number = Number(process.env.PORT);
 
-const server: Server = createServer((socket: Socket) => {
-  console.log(`Client connected: ${socket.remoteAddress}`);
-  socket.on("end", () => {
-    console.log("Client Disconnected");
-  });
-  socket.on("data", (data) => {
-    console.log(`Data received from client: ${data}`);
-  });
-  socket.on("close", () => {
-    console.log("Client Disconnected");
-  });
+const app = new App();
 
-  socket.write(
-    `Knock Knock! This is Zeus on port ${socket.localPort}! Who am I speaking to?\r\n`
-  );
-
-  setTimeout(() => {
-    socket.write("WAHOOO IM LATE");
-  }, 7000);
-});
+const server = app.getServer;
 
 server.on("drop", () => {
   console.log("Client disconnected");
