@@ -1,4 +1,4 @@
-import { describe, expect, test } from "@jest/globals";
+import { describe, expect, test, beforeEach, afterEach } from "@jest/globals";
 import InnateDomain from "./InnateDomain";
 
 // setup mock Domains
@@ -32,7 +32,7 @@ describe("Innate Domain Constructor", () => {
 });
 
 describe("Innate Domain Methods", () => {
-  describe("fetchProperty", () => {
+  describe("fetchProperty()", () => {
     test("Get IP of domain1", () => {
       expect(domain1.fetchProperty("ip")).toBe("192.168.4.2");
     });
@@ -40,9 +40,24 @@ describe("Innate Domain Methods", () => {
       expect(domain1.fetchProperty("index")).toBe(0);
     });
     test("Get 'foo' of domain1", () => {
-      expect(domain1.fetchProperty("foo")).toThrow(
-        "does not exist in an InnateDomain"
-      );
+      expect(() => {
+        domain1.fetchProperty("foo");
+      }).toThrow("does not exist in an InnateDomain");
+    });
+  });
+
+  describe("sortInnateDomainsByIndex()", () => {
+    let arr: Array<InnateDomain> = [];
+    beforeEach(() => {
+      arr = [domain2, domain1, domain3];
+    });
+    test("Sort by ID ascending", () => {
+      InnateDomain.sortInnateDomainsByIndex(arr);
+      expect(arr).toEqual(expect.arrayContaining([domain1, domain2, domain3]));
+    });
+    test("Sort by ID descending", () => {
+      InnateDomain.sortInnateDomainsByIndex(arr, "descending");
+      expect(arr).toEqual(expect.arrayContaining([domain3, domain2, domain1]));
     });
   });
 });

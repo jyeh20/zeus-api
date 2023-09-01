@@ -47,7 +47,7 @@ class InnateDomain {
     throw TypeError(`Property ${property} does not exist in an InnateDomain`);
   }
 
-  static sortInnateDomains(
+  static #sortInnateDomains(
     InnateDomainsArr: Array<InnateDomain>,
     property: any,
     order = "ascending"
@@ -78,7 +78,7 @@ class InnateDomain {
     InnateDomainsArr: Array<InnateDomain>,
     order = "ascending"
   ) {
-    return this.sortInnateDomains(InnateDomainsArr, "index", order);
+    return this.#sortInnateDomains(InnateDomainsArr, "index", order);
   }
 }
 
