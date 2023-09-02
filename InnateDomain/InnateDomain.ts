@@ -1,88 +1,41 @@
-import { InnateDomainIPMap } from "../consts/consts";
 import { Socket } from "net";
+import { DomainIPMap } from "../consts/consts";
+import ZeusSocket from "../ZeusSocket/ZeusSocket";
 
-class InnateDomain {
-  ip: string;
+export default class InnateDomain extends ZeusSocket {
   index: number;
-  socket: Socket;
 
   constructor(ip: string, socket: Socket) {
-    this.ip = this.checkIfValidIP(ip);
+    super(ip, "InnateDomain", socket);
     this.index = this.getIPFromDomainMap(ip);
-    this.socket = socket;
   }
 
-  // Getters
-
-  get getIP() {
-    return this.ip;
-  }
-
-  get getIndex() {
-    return this.index;
-  }
-
-  checkIfValidIP(ipaddress: string): string {
-    if (
-      /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(
-        ipaddress
-      )
-    ) {
-      return ipaddress;
-    }
-    throw new RangeError(`${ipaddress} is an invalid IP Address!`);
-  }
-
+  /**
+   * Retrieves an index number from the IP Domain map.
+   *
+   * @param ipaddress The IP Address to retrieve the index from.
+   * @returns The index of the given IP Address.
+   * @throws Error if the IP Address cannot be found in the Domain map.
+   */
   getIPFromDomainMap(ipaddress: string): number {
-    if (ipaddress in InnateDomainIPMap) {
-      return InnateDomainIPMap[ipaddress];
+    const mapToUse = DomainIPMap[this.type];
+    if (ipaddress in mapToUse) {
+      return mapToUse[ipaddress];
     }
-    throw new Error(`${ipaddress} was not found in InnateDomainIPMap`);
-  }
-
-  fetchProperty(property: string): any {
-    switch (property.toLowerCase()) {
-      case "ip":
-        return this.ip;
-      case "index":
-        return this.index;
-    }
-    throw TypeError(`Property ${property} does not exist in an InnateDomain`);
-  }
-
-  static #sortInnateDomains(
-    InnateDomainsArr: Array<InnateDomain>,
-    property: any,
-    order = "ascending"
-  ): Array<InnateDomain> {
-    const sortedInnateDomains = InnateDomainsArr.sort(
-      (domain1: InnateDomain, domain2: InnateDomain) => {
-        const d1Prop = domain1.fetchProperty(property);
-        const d2Prop = domain2.fetchProperty(property);
-        if (d1Prop < d2Prop) {
-          return -1;
-        }
-        if (d1Prop > d2Prop) {
-          return 1;
-        }
-
-        return 0;
-      }
+    throw new Error(
+      `IP Address: ${ipaddress} was not found in ${this.type}'s IP Map.`
     );
-
-    if (order === "descending") {
-      return sortedInnateDomains.reverse();
-    }
-
-    return sortedInnateDomains;
   }
 
-  static sortInnateDomainsByIndex(
-    InnateDomainsArr: Array<InnateDomain>,
-    order = "ascending"
-  ) {
-    return this.#sortInnateDomains(InnateDomainsArr, "index", order);
+  /**
+   * Returns a comparison using the ZeusSocket's index property
+   * as the comparison value.
+   *
+   * @param zs1 The first ZeusSocket to compare.
+   * @param zs2 The second ZeusSocket to compare.
+   * @returns An result of ZeusSocket.sort()
+   */
+  static sortByIndex(zs1: ZeusSocket, zs2: ZeusSocket): number {
+    return super.sort(zs1, zs2, "index");
   }
 }
-
-export default InnateDomain;
