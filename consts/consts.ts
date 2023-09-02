@@ -1,14 +1,27 @@
 type IP = {
-  [key: string]: number
-}
+  [key: string]: number;
+};
 
-type Consts = {
-  [key: string]: IP
-}
-const consts: Consts = {
-  ip_map: {
-    "192.168.4.18": 1,
-  },
-}
+type Const = {
+  [key: string]: number | string;
+};
 
-export default consts;
+export const InnateDomainIPMap: IP = process.env.test
+  ? {
+      "192.168.4.18": 0,
+    }
+  : {
+      "192.168.4.2": 0,
+      "192.168.4.3": 1,
+      "192.168.6.2": 2,
+    };
+
+export const consts: Const = {
+  packageSize: 1024,
+};
+
+export type ConnectionObject = {
+  ZeusConnector: string;
+  type: string;
+  clientIP: string;
+};
