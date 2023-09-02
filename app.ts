@@ -21,8 +21,10 @@ class App {
     console.log(
       `Client connected: ${socket.remoteAddress}:${socket.localPort}`
     );
+
+    // Receive and handle connection message
     socket.on("data", (data) => {
-      this.handleData(data);
+      this.handleData(data, socket);
     });
 
     socket.on("close", () => {
@@ -38,21 +40,21 @@ class App {
     }, 7000);
   }
 
-  handleData(data: Buffer) {
+  handleData(data: Buffer, socket: Socket) {
     const dataAsJson: ConnectionObject = JSON.parse(data.toString());
     console.log(`Data received from client: ${dataAsJson}`);
 
     switch (dataAsJson.ZeusConnector) {
       case "initSocket":
-        this.initializeSocket(dataAsJson);
+        this.initializeSocket(dataAsJson, socket);
         break;
     }
   }
 
-  initializeSocket(data: ConnectionObject) {
+  initializeSocket(data: ConnectionObject, socket: Socket) {
     switch (data.type) {
       case "InnateDomain":
-        this.InnateDomains.push(new InnateDomain(data.clientIP));
+        this.InnateDomains.push(new InnateDomain(data.clientIP, socket));
         InnateDomain.sortInnateDomainsByIndex(this.InnateDomains);
     }
   }

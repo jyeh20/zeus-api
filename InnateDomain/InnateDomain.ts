@@ -1,12 +1,15 @@
 import { InnateDomainIPMap } from "../consts/consts";
+import { Socket } from "net";
 
 class InnateDomain {
   ip: string;
   index: number;
+  socket: Socket;
 
-  constructor(ip: string) {
-    this.ip = ip;
-    this.index = InnateDomainIPMap[ip];
+  constructor(ip: string, socket: Socket) {
+    this.ip = this.checkIfValidIP(ip);
+    this.index = this.getIPFromDomainMap(ip);
+    this.socket = socket;
   }
 
   // Getters
@@ -19,6 +22,24 @@ class InnateDomain {
     return this.index;
   }
 
+  checkIfValidIP(ipaddress: string): string {
+    if (
+      /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(
+        ipaddress
+      )
+    ) {
+      return ipaddress;
+    }
+    throw new RangeError(`${ipaddress} is an invalid IP Address!`);
+  }
+
+  getIPFromDomainMap(ipaddress: string): number {
+    if (ipaddress in InnateDomainIPMap) {
+      return InnateDomainIPMap[ipaddress];
+    }
+    throw new Error(`${ipaddress} was not found in InnateDomainIPMap`);
+  }
+
   fetchProperty(property: string): any {
     switch (property.toLowerCase()) {
       case "ip":
@@ -29,7 +50,7 @@ class InnateDomain {
     throw TypeError(`Property ${property} does not exist in an InnateDomain`);
   }
 
-  static sortInnateDomains(
+  static #sortInnateDomains(
     InnateDomainsArr: Array<InnateDomain>,
     property: any,
     order = "ascending"
@@ -60,7 +81,7 @@ class InnateDomain {
     InnateDomainsArr: Array<InnateDomain>,
     order = "ascending"
   ) {
-    return this.sortInnateDomains(InnateDomainsArr, "index", order);
+    return this.#sortInnateDomains(InnateDomainsArr, "index", order);
   }
 }
 
