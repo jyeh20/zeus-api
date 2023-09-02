@@ -1,12 +1,15 @@
 import { InnateDomainIPMap } from "../consts/consts";
+import { Socket } from "net";
 
 class InnateDomain {
   ip: string;
   index: number;
+  socket: Socket;
 
-  constructor(ip: string) {
+  constructor(ip: string, socket: Socket) {
     this.ip = this.checkIfValidIP(ip);
     this.index = this.getIPFromDomainMap(ip);
+    this.socket = socket;
   }
 
   // Getters

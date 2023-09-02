@@ -1,32 +1,35 @@
 import { describe, expect, test, beforeEach, afterEach } from "@jest/globals";
+import { Socket } from "net";
 import InnateDomain from "./InnateDomain";
 
 // setup mock Domains
 
-const domain1 = new InnateDomain("192.168.4.2");
-const domain2 = new InnateDomain("192.168.4.3");
-const domain3 = new InnateDomain("192.168.6.2");
+const mockSocket = new Socket();
+
+const domain1 = new InnateDomain("192.168.4.2", mockSocket);
+const domain2 = new InnateDomain("192.168.4.3", mockSocket);
+const domain3 = new InnateDomain("192.168.6.2", mockSocket);
 
 describe("Innate Domain Constructor", () => {
   test("Using a valid IP", () => {
-    expect(new InnateDomain("192.168.4.2")).toEqual(domain1);
+    expect(new InnateDomain("192.168.4.2", mockSocket)).toEqual(domain1);
   });
   test("Invalid IP = abc.def.ghi.jk", () => {
     const ip = "abc.def.ghi.jk";
     expect(() => {
-      new InnateDomain(ip);
+      new InnateDomain(ip, mockSocket);
     }).toThrow("abc.def.ghi.jk is an invalid IP Address!");
   });
   test("Invalid IP = 1923.168.4.2", () => {
     const ip = "1923.168.4.2";
     expect(() => {
-      new InnateDomain(ip);
+      new InnateDomain(ip, mockSocket);
     }).toThrow("1923.168.4.2 is an invalid IP Address!");
   });
   test("Invalid IP = 192.168.4.4", () => {
     const ip = "192.168.4.4";
     expect(() => {
-      new InnateDomain(ip);
+      new InnateDomain(ip, mockSocket);
     }).toThrow("was not found in InnateDomainIPMap");
   });
 });
