@@ -1,5 +1,6 @@
 import { describe, expect, test, beforeEach, afterEach } from "@jest/globals";
 import { Socket } from "net";
+import ZeusSocketCollection from "../ZeusSocket/ZeusSocketCollection";
 import InnateDomain from "./InnateDomain";
 
 // setup mock Domains
@@ -30,36 +31,29 @@ describe("Innate Domain Constructor", () => {
     const ip = "192.168.4.4";
     expect(() => {
       new InnateDomain(ip, mockSocket);
-    }).toThrow("was not found in InnateDomainIPMap");
+    }).toThrow("was not found in InnateDomain's IP Map.");
   });
 });
 
 describe("Innate Domain Methods", () => {
-  describe("fetchProperty()", () => {
-    test("Get IP of domain1", () => {
-      expect(domain1.fetchProperty("ip")).toBe("192.168.4.2");
-    });
-    test("Get index of domain1", () => {
-      expect(domain1.fetchProperty("index")).toBe(0);
-    });
-    test("Get 'foo' of domain1", () => {
-      expect(() => {
-        domain1.fetchProperty("foo");
-      }).toThrow("does not exist in an InnateDomain");
-    });
-  });
-
-  describe("sortInnateDomainsByIndex()", () => {
-    let arr: Array<InnateDomain> = [];
+  describe("sortByIndex()", () => {
+    let arr: ZeusSocketCollection<InnateDomain> = new ZeusSocketCollection(
+      "InnateDomain"
+    );
     beforeEach(() => {
-      arr = [domain2, domain1, domain3];
+      arr.push(domain2);
+      arr.push(domain3);
+      arr.push(domain1);
+    });
+    afterEach(() => {
+      arr.clear();
     });
     test("Sort by ID ascending", () => {
-      InnateDomain.sortInnateDomainsByIndex(arr);
+      arr.sort(InnateDomain.sortByIndex);
       expect(arr).toEqual(expect.arrayContaining([domain1, domain2, domain3]));
     });
     test("Sort by ID descending", () => {
-      InnateDomain.sortInnateDomainsByIndex(arr, "descending");
+      arr.sort(InnateDomain.sortByIndex);
       expect(arr).toEqual(expect.arrayContaining([domain3, domain2, domain1]));
     });
   });
