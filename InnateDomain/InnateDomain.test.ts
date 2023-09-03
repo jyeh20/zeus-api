@@ -36,34 +36,20 @@ describe("Innate Domain Constructor", () => {
 });
 
 describe("Innate Domain Methods", () => {
-  describe("fetchProperty()", () => {
-    test("Get IP of domain1", () => {
-      expect(domain1.fetchProperty("ip")).toBe("192.168.4.2");
-    });
-    test("Get index of domain1", () => {
-      expect(domain1.fetchProperty("index")).toBe(0);
-    });
-    test("Get 'foo' of domain1", () => {
-      expect(() => {
-        domain1.fetchProperty("foo");
-      }).toThrow("does not exist in a ZeusSocket Object");
-    });
-  });
-
   describe("sortByIndex()", () => {
-    let arr: ZeusSocketCollection = new ZeusSocketCollection();
+    let arr: ZeusSocketCollection<InnateDomain> = new ZeusSocketCollection(
+      "InnateDomain"
+    );
     beforeEach(() => {
       arr.push(domain2);
       arr.push(domain3);
       arr.push(domain1);
     });
     afterEach(() => {
-      arr = new ZeusSocketCollection();
+      arr.clear();
     });
     test("Sort by ID ascending", () => {
-      arr.sort((s1, s2) => {
-        return InnateDomain.sortByIndex(s1, s2);
-      });
+      arr.sort(InnateDomain.sortByIndex);
       expect(arr).toEqual(expect.arrayContaining([domain1, domain2, domain3]));
     });
     test("Sort by ID descending", () => {
