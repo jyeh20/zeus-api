@@ -1,14 +1,15 @@
 import { Server, createServer, Socket } from "net";
 import { ConnectionObject } from "./consts/consts";
 import InnateDomain from "./InnateDomain/InnateDomain";
+import ZeusSocketCollection from "./ZeusSocket/ZeusSocketCollection";
 
 class App {
   server: Server;
-  InnateDomains: Array<InnateDomain>;
+  InnateDomains: ZeusSocketCollection<InnateDomain>;
 
   constructor() {
     this.server = this.createServer();
-    this.InnateDomains = [];
+    this.InnateDomains = new ZeusSocketCollection<InnateDomain>("InnateDomain");
   }
 
   createServer(): Server {
@@ -55,7 +56,7 @@ class App {
     switch (data.type) {
       case "InnateDomain":
         this.InnateDomains.push(new InnateDomain(data.clientIP, socket));
-        InnateDomain.sortInnateDomainsByIndex(this.InnateDomains);
+        this.InnateDomains.sort(InnateDomain.sortByIndex);
     }
   }
 
