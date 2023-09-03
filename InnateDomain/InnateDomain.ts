@@ -1,10 +1,19 @@
 import { Socket } from "net";
-import { DomainIPMap } from "../consts/consts";
+import { InnateDomainIPMap } from "./consts";
 import ZeusSocket from "../ZeusSocket/ZeusSocket";
 
+/**
+ * A Zeus project that lights up framed posters.
+ */
 export default class InnateDomain extends ZeusSocket {
   index: number;
 
+  /**
+   * @constructor Creats a new Innate Domain socket object.
+   *
+   * @param ip The IP address of the connecting device.
+   * @param socket The socket created by the server.
+   */
   constructor(ip: string, socket: Socket) {
     super(ip, "InnateDomain", socket);
     this.index = this.getIPFromDomainMap(ip);
@@ -18,9 +27,8 @@ export default class InnateDomain extends ZeusSocket {
    * @throws Error if the IP Address cannot be found in the Domain map.
    */
   getIPFromDomainMap(ipaddress: string): number {
-    const mapToUse = DomainIPMap[this.type];
-    if (ipaddress in mapToUse) {
-      return mapToUse[ipaddress];
+    if (ipaddress in InnateDomainIPMap) {
+      return InnateDomainIPMap[ipaddress];
     }
     throw new Error(
       `IP Address: ${ipaddress} was not found in ${this.type}'s IP Map.`
@@ -28,14 +36,21 @@ export default class InnateDomain extends ZeusSocket {
   }
 
   /**
-   * Returns a comparison using the ZeusSocket's index property
-   * as the comparison value.
+   * Compares two InnateDomains based on their indexes/order.
    *
-   * @param zs1 The first ZeusSocket to compare.
-   * @param zs2 The second ZeusSocket to compare.
-   * @returns An result of ZeusSocket.sort()
+   * @param s1 The first Innate Domain object to compare.
+   * @param s2 The second Innate Domain object to compare.
+   * @returns A comparison result based on the domain indexes.
    */
-  static sortByIndex(zs1: ZeusSocket, zs2: ZeusSocket): number {
-    return super.sort(zs1, zs2, "index");
+  static sortByIndex(s1: InnateDomain, s2: InnateDomain): number {
+    const index1 = s1.index;
+    const index2 = s2.index;
+    if (index1 < index2) {
+      return 1;
+    }
+    if (index1 > index2) {
+      return -1;
+    }
+    return 0;
   }
 }
